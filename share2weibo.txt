@@ -1,59 +1,4 @@
-
-
-(*
+(*
 share what you are play in iTunes to weibo
 Alan
-*)
-
-property my_title : "Google Lyric Search"
-property baseURL : "http://v.t.sina.com.cn/share/share.php?pic=http://ww4.sinaimg.cn/bmiddle/77b7d42btw1dwsr0h94wfj.jpg&title=Alan_SB分享了："
-property sourceurl : "http://www.bing.com/search?q="
-
-tell application "iTunes"
-	if player state is not stopped then
-		set theTrack to current track
-	else if selection is not {} then
-		set theTrack to (item 1 of selection)
-	else
-		display dialog return & "Nothing is playing or selected..." buttons {"Cancel"} default button 1 with icon 0 giving up after 15 with title my_title
-		return
-	end if
-	
-	try
-		tell theTrack to set {nom, art, alb} to {get name, get artist, get album}
-	on error
-		display dialog return & "Unable to access the track info..." buttons {"Cancel"} default button 1 with icon 0 giving up after 15 with title my_title
-		return
-	end try
-	
-	my open_location(baseURL & art & " <<" & nom & ">> &url=" & my urlencode(sourceurl & nom & " " & art) as text)
-end tell
-
-to open_location(theURL)
-	tell application "Google Chrome"
-		launch
-		tell window 1
-			make new tab with properties {URL:theURL}
-			repeat while loading of active tab
-				delay 0.1
-			end repeat
-		end tell
-		activate
-	end tell
-end open_location
-
-on replace_chars(this_text, search_string, replacement_string)
-	set AppleScript's text item delimiters to the search_string
-	set the item_list to every text item of this_text
-	set AppleScript's text item delimiters to the replacement_string
-	set this_text to the item_list as string
-	set AppleScript's text item delimiters to ""
-	return this_text
-end replace_chars
-
-on urlencode(theText)
-	return theText
-	set theText to replace_chars(theText, "'", " ")
-	set theText to replace_chars(theText, "\"", " ")
-	do shell script "php -r 'echo urldecode(\"" & theText & "\");'"
-end urlencode
+*)property my_title : "Google Lyric Search"property baseURL : "http://v.t.sina.com.cn/share/share.php?pic=http://ww4.sinaimg.cn/bmiddle/77b7d42btw1dwsr0h94wfj.jpg&title=Alan_SB分享了："property sourceurl : "http://cn.bing.com/search?q="tell application "iTunes"	if player state is not stopped then		set theTrack to current track	else if selection is not {} then		set theTrack to (item 1 of selection)	else		display dialog return & "Nothing is playing or selected..." buttons {"Cancel"} default button 1 with icon 0 giving up after 15 with title my_title		return	end if		try		tell theTrack to set {nom, art, alb} to {get name, get artist, get album}	on error		display dialog return & "Unable to access the track info..." buttons {"Cancel"} default button 1 with icon 0 giving up after 15 with title my_title		return	end try		my open_location(baseURL & art & " <<" & nom & ">> 来自我的iTunes &url=" & my urlencode(sourceurl & nom & " " & art) as text)end tellto open_location(theURL)	tell application "Google Chrome"		windows		delay 3		make new tab at the end of window 1 with properties {URL:theURL}	end tellend open_locationon replace_chars(this_text, search_string, replacement_string)	set AppleScript's text item delimiters to the search_string	set the item_list to every text item of this_text	set AppleScript's text item delimiters to the replacement_string	set this_text to the item_list as string	set AppleScript's text item delimiters to ""	return this_textend replace_charson urlencode(theText)	return theText	set theText to replace_chars(theText, "'", " ")	set theText to replace_chars(theText, "\"", " ")	do shell script "php -r 'echo urldecode(\"" & theText & "\");'"end urlencode
